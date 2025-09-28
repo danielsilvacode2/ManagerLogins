@@ -12,15 +12,15 @@ public class ManagerFie {
 
     Scanner sc = new Scanner(System.in);
 
-    public void CreateCli(Set<AccountInfo> cli, boolean operation) {
+    public void CreateCli(Set<AccountInfo> cli, boolean operation,String path) {
 
-        System.out.println("Enter path file: ");
-        String path = sc.nextLine();
+
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, operation))) {
 
             for (AccountInfo a : cli) {
                 bw.write(a.getAppOrSites() + "," + a.getLogin() + "," + a.getPassword());
+                bw.newLine();
             }
 
         } catch (IOException e) {
@@ -29,12 +29,10 @@ public class ManagerFie {
     }
 
 
-    public Set<AccountInfo> ReadFile() {
+    public Set<AccountInfo> ReadFile(String path) {
 
         Set<AccountInfo> cli = new LinkedHashSet<>();
 
-        System.out.println("Enter path file: ");
-        String path = sc.nextLine();
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
@@ -64,5 +62,26 @@ public class ManagerFie {
         }
 
         return cli;
+    }
+
+    public boolean toCheking(String path, String password) {
+
+        try (BufferedReader br = new BufferedReader(new BufferedReader(new FileReader(path)))) {
+
+            String line = br.readLine();
+
+           if(line != null){
+               String[] fields = line.split(",");
+
+               if(fields[2].equals(password)){
+                   return false;
+               }
+
+           }
+
+        } catch (IOException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+        return true;
     }
 }

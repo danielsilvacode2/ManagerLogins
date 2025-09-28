@@ -26,6 +26,10 @@ public class AccountInfo {
         return appOrSites;
     }
 
+    public void setAppOrSites(AppOrSites appOrSites) {
+        this.appOrSites = appOrSites;
+    }
+
     public String getLogin() {
         return login;
     }
