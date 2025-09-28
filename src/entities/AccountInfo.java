@@ -52,6 +52,7 @@ public class AccountInfo {
             if (password.equals(repPassword)) {
 
                 this.login = login;
+                this.password = password;
                 System.out.println("login changed successfully");
                 loop = false;
 

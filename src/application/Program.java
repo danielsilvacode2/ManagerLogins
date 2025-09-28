@@ -2,6 +2,7 @@ package application;
 
 import entities.AccountInfo;
 import enums.AppOrSites;
+import exception.AccException;
 import services.ManagerFie;
 
 import java.util.Scanner;
@@ -17,6 +18,7 @@ public class Program {
         System.out.println("CREATE PATH(N) OR OPEN PATH EXIST(E) ");
         char choice = sc.next().charAt(0);
         sc.nextLine();
+
         managerChoice(sc, choice, managerFie);
     }
 
@@ -26,22 +28,26 @@ public class Program {
         int attempts = 0;
 
         do {
+            try {
 
-            System.out.println("the password and the file:");
-            System.out.print("path: ");
-            String path = sc.nextLine();
-            System.out.println("password: ");
-            String password = sc.nextLine();
+                System.out.println("the password and the file:");
+                System.out.print("path: ");
+                String path = sc.nextLine();
+                System.out.println("password: ");
+                String password = sc.nextLine();
 
-            loop = managerFie.toCheking(path, password);
+                loop = managerFie.toCheking(path, password);
 
-            if(loop){
-                openFile(path,managerFie,sc);
+                if (loop != true) {
+                    openFile(path, managerFie, sc);
+                }
+                if (attempts == 5) {
+                    return false;
+                }
+                attempts++;
+            } catch (AccException e) {
+                System.out.println("ERROR: " + e.getMessage());
             }
-            if (attempts == 5) {
-                return false;
-            }
-            attempts++;
         } while (loop);
 
         return loop;
@@ -58,12 +64,13 @@ public class Program {
     public static void openFile(String path, ManagerFie managerFie, Scanner sc) {
 
         boolean loop = true;
-        do {
 
+        do {
 
             AccountInfo accountInfo = new AccountInfo();
             Set<AccountInfo> list = managerFie.ReadFile(path);
 
+            System.out.println();
             System.out.println("Adicionar conta(1)");
             System.out.println("listar contas(2)");
             System.out.println("update senha(3)");
@@ -78,7 +85,7 @@ public class Program {
                 case 1:
 
                     for (AppOrSites app : AppOrSites.values()) {
-                        System.out.println(app);
+                        System.out.print(app + " ");
                     }
 
                     String appOrsite = sc.nextLine();
@@ -88,11 +95,15 @@ public class Program {
                         System.out.println("dados a esse app ou site ja existentes");
                         break;
                     } else {
+
+                        System.out.print("Login: ");
                         String login = sc.nextLine();
                         accountInfo.UpdateLogin(login);
+
                         list.add(accountInfo);
                     }
 
+                    System.out.println();
                     break;
 
                 case 2:
@@ -126,17 +137,24 @@ public class Program {
                             a.UpdateLogin(login);
                         }
                     });
+
                     break;
 
                 case 5:
+
                     loop = false;
                     break;
                 default:
+
                     System.out.println("OPCAO INEXISTENTE");
                     break;
+
             }
 
-            managerFie.CreateCli(list,false,path);
+            managerFie.CreateCli(list, false, path);
+
         } while (loop);
+
     }
+
 }

@@ -2,6 +2,7 @@ package services;
 
 import entities.AccountInfo;
 import enums.AppOrSites;
+import exception.AccException;
 
 import java.io.*;
 import java.util.LinkedHashSet;
@@ -55,7 +56,6 @@ public class ManagerFie {
                 line = br.readLine();
             }
 
-            cli.forEach(System.out::println);
 
         } catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
@@ -73,8 +73,13 @@ public class ManagerFie {
            if(line != null){
                String[] fields = line.split(",");
 
-               if(fields[2].equals(password)){
+               String passwordFile = fields[2];
+               if(passwordFile.equals(password)){
+
                    return false;
+
+               }else {
+                   throw new AccException("Senha incorreta");
                }
 
            }
